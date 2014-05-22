@@ -25,6 +25,24 @@ Tool.prototype.$digest = function() {
 	}
 }
 
+Tool.prototype.$$digestOnce = function() {
+	var self = this,
+		dirty;
+
+	for (var t in this.$$watchers) {
+		var newVal = watch.watchFn(self);
+		var oldVal = watch.last;
+
+		if (newVal !== oldVal) {
+			watch.listenerFn(newVal, oldVal);
+			dirty = true;
+			watch.last = newVal;
+		}
+	}
+
+	return dirty;
+}
+
 function has (obj, key) {
 	return Object.prototype.hasOwnProperty.call(obj, key);
 }
