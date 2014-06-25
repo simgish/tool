@@ -1,48 +1,89 @@
-function Tool() {
-	this.$$watchers = [];
-}
+;(function (window, document, undefined) {
 
-Tool.prototype.$watch = function(watchFn, listenerFn) {
-	var watcher = {
-		watchFn: watchFn,
-		listenerFn: listenerFn,
-		lastVal: null
-	}
+	var root = this;
 
-	this.$$watchers.push(watcher);
-}
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+	
+	// Constructor
+	var Tool = function Tool(els) {
+		// console.log(els)
 
-Tool.prototype.$digest = function() {
-	var self = this;
-
-	for (var watch in this.$$watchers) {
-		var newVal = watch.watchFn(self);
-		var oldVal = watch.last;
-		if (newVal !== oldVal) {
-			watch.listenerFn(newVal, oldVal, self);
-			watch.last = newVal;
+		for (var i = 0; i < els.length; i++) {
+			this[i] = els[i];
 		}
-	}
-}
 
-Tool.prototype.$$digestOnce = function() {
-	var self = this,
-		dirty;
+		this.length = els.length;
+	};
 
-	for (var t in this.$$watchers) {
-		var newVal = watch.watchFn(self);
-		var oldVal = watch.last;
+	Tool.prototype.has = function(obj, key) {
+		return hasOwnProperty.call(obj, key);
+	};
 
-		if (newVal !== oldVal) {
-			watch.listenerFn(newVal, oldVal);
-			dirty = true;
-			watch.last = newVal;
+	Tool.prototype.map = function(callback) {
+		var res = [];
+
+		for (var i = 0; i < this.length; i++) {
+			results.push(callback.call(this, this[i], i));
 		}
-	}
 
-	return dirty;
-}
+		return res;
+	};
 
-function has (obj, key) {
-	return Object.prototype.hasOwnProperty.call(obj, key);
-}
+	Tool.prototype.forEach = function(callback) {
+		this.map(callback);
+
+		return this;
+	};
+
+	Tool.prototype.ready = function(func) {
+		document.addEventListener('DOMContentLoaded', func);
+	};
+
+	Tool.prototype.log = function(m) {
+		console.log(m);
+	};
+
+	Tool.prototype.id = function(id) {
+		return document.getElementById(id);
+	};
+
+	Tool.prototype.tag = function(tag) {
+		return document.getElementsByTagName(tag);
+	};
+
+	var tool = {
+		get: function(sel) {
+			var els;
+
+			if (typeof sel === 'string') {
+				els = document.querySelectorAll(sel);
+			}
+			else if (sel.length) {
+				els = sel;
+			}
+			else {
+				els = [sel];
+			}
+
+			return new Tool(els);
+		},
+
+		create: function(tag, attrs) {
+			var el = new Tool([document.createElement(tag)]);
+
+			if (attrs) {
+				for (var key in attrs) {
+					if (this.has(attrs, key)) {
+						el.attr(key, attrs[key]);
+					}
+				}
+			}
+
+			return el;
+		}
+
+	};
+
+	window.Tool = tool;
+
+})(this, document);

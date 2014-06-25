@@ -1,13 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta name="description" content="" />
-	<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"></script>
-	<script src="/src/tool.js"></script>
 	<meta charset=utf-8 />
 	<title>tool</title>
+	<script src="/src/tool.js"></script>
 </head>
 <body>
+
+	<div id="main"></div>
+
+	<script type="text/javascript">
+		// Tool.ready(function () {
+		// 	init();
+		// });
+
+		var init = function init() {
+			// Tool.log(Tool.id('main'));
+			// var el = Tool.get('div');
+			// console.log(Tool.get(el));
+			var el = Tool.create('div');
+			console.log(el);
+			document.body.appendChild(el[0]);
+		};
+		var el = Tool.create('div');
+			console.log(el);
+	</script>
 
 </body>
 </html>
