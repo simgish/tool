@@ -172,19 +172,16 @@
 		},
 
 		has: function(selector) {
-			var res = [];
+			var found = false;
 
 			this.each(function() {
-				var collection = this.querySelectorAll(selector);
-
+				var collection = this.parentNode.querySelectorAll(selector);
 				if (collection.length) {
-					tool.each(collection, function(name, value) {
-						res.push(value);
-					});
+					found = true;
 				}
 			});
 
-			return tool(res);
+			return found;
 		},
 
 		find: function(selector) {
