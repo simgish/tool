@@ -144,7 +144,7 @@
 
 		text: function(val) {
 			if (val === undefined) {
-				return this.each(function() { this.empty() });
+				return this[0].innerHTML;
 			}
 			else {
 				return this.empty().each(function() { this.innerHTML = val });
@@ -175,7 +175,7 @@
 			var found = false;
 
 			this.each(function() {
-				var collection = this.parentNode.querySelectorAll(selector);
+				var collection = this.querySelectorAll(selector);
 				if (collection.length) {
 					found = true;
 				}
