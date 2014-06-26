@@ -45,11 +45,11 @@
 			selector.charAt( selector.length - 1 ) === ">" &&
 			selector.length >= 3){var divElm = d.createElement('div');
 			divElm.className = 'hippo-doc-frag-wrapper';
-		var docFrag = d.createDocumentFragment();
-		docFrag.appendChild(divElm);
-		var queryDiv = docFrag.querySelector('div');
-		queryDiv.innerHTML = selector;
-		var numberOfChildren = queryDiv.children.length;
+			var docFrag = d.createDocumentFragment();
+			docFrag.appendChild(divElm);
+			var queryDiv = docFrag.querySelector('div');
+			queryDiv.innerHTML = selector;
+			var numberOfChildren = queryDiv.children.length;
 
 			//loop over nodelist and fill object, needs to be done because a string of html can be passed with siblings
 			for (var z = 0; z < numberOfChildren; z++) {
@@ -169,6 +169,37 @@
 			}
 
 			return tool(res);
+		},
+
+		has: function(selector) {
+			var res = [];
+
+			this.each(function() {
+				var collection = this.querySelectorAll(selector);
+
+				if (collection.length) {
+					tool.each(collection, function(name, value) {
+						res.push(value);
+					});
+				}
+			});
+
+			return tool(res);
+		},
+
+		find: function(selector) {
+			var res = [];
+
+			this.each(function() {
+				var collection = this.querySelectorAll(selector);
+				if (collection.length) {
+					tool.each(collection, function() {
+						res.push(this);
+					});
+				}
+			});
+
+			return tool(res);
 		}
 	};
 
@@ -191,7 +222,7 @@
 			}
 		}
 
-		return obj;
+		return tool(obj);
 	};
 
 }).call(this);
