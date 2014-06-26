@@ -1,89 +1,98 @@
-;(function (window, document, undefined) {
+(function (window, undefined) {
 
-	var root = this;
+	'use strict';
 
-	var hasOwnProperty = Object.prototype.hasOwnProperty;
-	
-	// Constructor
-	var Tool = function Tool(els) {
-		// console.log(els)
+	var root = this,
+		doc = root.document,
+		hasOwnProperty = Object.prototype.hasOwnProperty;
 
-		for (var i = 0; i < els.length; i++) {
-			this[i] = els[i];
-		}
-
-		this.length = els.length;
+	var tool = function(selector, context) {
+		return new Tool(selector, context);
 	};
 
-	Tool.prototype.has = function(obj, key) {
+	// Constructor
+	var Tool = function(selector, context) {
+		// context can be a selector, element, this document, or iframe document
+		var d,
+			nodes;
+
+		if (context && context.nodeType) {
+			// node
+			if (context.nodeType === 1) {
+				// element
+				d = context.ownerDocument;
+			}
+			else {
+				// document or iframe
+				d = context.body.ownerDocument;
+			}
+		}
+		else {
+			// selector
+			d = doc;
+		}
+
+		if (typeof selector === 'string') {
+			nodes = document.querySelectorAll(selector);
+		}
+
+		for (var i = 0; i < nodes.length; i++) {
+			this[i] = nodes[i];
+		}
+
+		this.length = nodes.length;
+		
+		return this;
+	};
+
+	tool.fn = Tool.prototype = {
+		constructor: tool
+	};
+
+	tool.fn.size = function() {
+		return this.length;
+	};
+
+	tool.fn.children = function() {
+		return this[0].children;
+	};
+
+	tool.fn.text = function(data) {
+		return this.textContent;
+	};
+
+	tool.fn.has = function(obj, key) {
 		return hasOwnProperty.call(obj, key);
 	};
 
-	Tool.prototype.map = function(callback) {
+	tool.fn.map = function(callback) {
 		var res = [];
 
 		for (var i = 0; i < this.length; i++) {
-			results.push(callback.call(this, this[i], i));
+			res.push(callback.call(this, this[i], i));
 		}
 
 		return res;
 	};
 
-	Tool.prototype.forEach = function(callback) {
+	tool.fn.forEach = function(callback) {
 		this.map(callback);
 
 		return this;
 	};
 
-	Tool.prototype.ready = function(func) {
-		document.addEventListener('DOMContentLoaded', func);
-	};
+	tool.fn.get = function(index) {
+		return index === undefined ? this[0] : this[index];
+	}
 
-	Tool.prototype.log = function(m) {
-		console.log(m);
-	};
-
-	Tool.prototype.id = function(id) {
+	tool.fn.id = function(id) {
 		return document.getElementById(id);
 	};
 
-	Tool.prototype.tag = function(tag) {
+	tool.fn.tag = function(tag) {
 		return document.getElementsByTagName(tag);
 	};
 
-	var tool = {
-		get: function(sel) {
-			var els;
+	root.tool = tool;
 
-			if (typeof sel === 'string') {
-				els = document.querySelectorAll(sel);
-			}
-			else if (sel.length) {
-				els = sel;
-			}
-			else {
-				els = [sel];
-			}
-
-			return new Tool(els);
-		},
-
-		create: function(tag, attrs) {
-			var el = new Tool([document.createElement(tag)]);
-
-			if (attrs) {
-				for (var key in attrs) {
-					if (this.has(attrs, key)) {
-						el.attr(key, attrs[key]);
-					}
-				}
-			}
-
-			return el;
-		}
-
-	};
-
-	window.Tool = tool;
-
-})(this, document);
+}).call(this);

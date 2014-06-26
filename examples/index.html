@@ -7,23 +7,29 @@
 </head>
 <body>
 
-	<div id="main"></div>
+	<div id="main">
+		<div id="child1">
+			<p>child1</p>
+		</div>
+		<div id="child2">
+			<p>child2</p>
+		</div>
+	</div>
+
+	<div id="main2">
+		<div id="child3">
+			<p>child3</p>
+		</div>
+		<div id="child4">
+			<p>child4</p>
+		</div>
+	</div>
 
 	<script type="text/javascript">
-		// Tool.ready(function () {
-		// 	init();
-		// });
 
-		var init = function init() {
-			// Tool.log(Tool.id('main'));
-			// var el = Tool.get('div');
-			// console.log(Tool.get(el));
-			var el = Tool.create('div');
-			console.log(el);
-			document.body.appendChild(el[0]);
-		};
-		var el = Tool.create('div');
-			console.log(el);
+		var m = tool('div');
+		console.log(m);
+
 	</script>
 
 </body>
