@@ -45,11 +45,11 @@
 			selector.charAt( selector.length - 1 ) === ">" &&
 			selector.length >= 3){var divElm = d.createElement('div');
 			divElm.className = 'hippo-doc-frag-wrapper';
-			var docFrag = d.createDocumentFragment();
-			docFrag.appendChild(divElm);
-			var queryDiv = docFrag.querySelector('div');
-			queryDiv.innerHTML = selector;
-			var numberOfChildren = queryDiv.children.length;
+		var docFrag = d.createDocumentFragment();
+		docFrag.appendChild(divElm);
+		var queryDiv = docFrag.querySelector('div');
+		queryDiv.innerHTML = selector;
+		var numberOfChildren = queryDiv.children.length;
 
 			//loop over nodelist and fill object, needs to be done because a string of html can be passed with siblings
 			for (var z = 0; z < numberOfChildren; z++) {
@@ -94,7 +94,72 @@
 	root.tool = tool;
 
 	tool.fn = Tool.prototype = {
-		constructor: tool
+		constructor: tool,
+
+		version: '0.0.1',
+
+		events: {},
+
+		each: function(callback) {
+			return tool.each(this, callback);
+		},
+
+		size: function() {
+			return this.length;
+		},
+
+		get: function(index) {
+			return index === undefined ? this[0] : this[index];
+		},
+
+		at: function(index) {
+			return tool(this.get(index));
+		},
+
+		first: function() {
+			return tool(this[0]);
+		},
+
+		last: function() {
+			return tool(this[this.length - 1]);
+		},
+
+		map: function (callback) {
+        	var results = [];
+
+        	for (var i = 0; i < this.length; i++) {
+            	results.push(callback.call(this, this[i], i));
+        	}
+
+        	return results;
+        },
+
+		show: function() {
+			this[0].style.display = 'block';
+		},
+
+		hide: function() {
+			this[0].style.display = 'none';
+		},
+
+		text: function(val) {
+			if (val === undefined) {
+				return this.each(function() { this.empty() });
+			}
+			else {
+				return this.empty().each(function() { this.innerHTML = val });
+			}
+		},
+
+		empty: function() {
+			return this.each(function() {
+				this.innerHTML = '';
+			});
+		},
+
+		children: function() {
+			return tool(this[0].childNodes);
+		}
 	};
 
 	tool.each = function(obj, callback) {
@@ -117,38 +182,6 @@
 		}
 
 		return obj;
-	};
-
-	tool.fn.size = function() {
-		return this.length;
-	};
-
-	tool.fn.each = function(callback) {
-		return tool.each(this, callback);
-	};
-
-	tool.fn.get = function(index) {
-		return index === undefined ? this[0] : this[index];
-	};
-
-	tool.fn.at = function(index) {
-		return tool(this.get(index));
-	}
-
-	tool.fn.first = function() {
-		return tool(this[0]);
-	};
-
-	tool.fn.last = function() {
-		return tool(this[this.length - 1]);
-	};
-
-	tool.fn.show = function() {
-		this[0].style.display = 'block';
-	}
-
-	tool.fn.hide = function() {
-		this[0].style.display = 'none';
 	};
 
 }).call(this);
