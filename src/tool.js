@@ -158,7 +158,17 @@
 		},
 
 		children: function() {
-			return tool(this[0].childNodes);
+			var res = [],
+				kids = this[0].childNodes;
+
+
+			for (var i in kids) {
+				if (kids[i].nodeType === 1) {
+					res.push(kids[i]);
+				}
+			}
+
+			return tool(res);
 		}
 	};
 
