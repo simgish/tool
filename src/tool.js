@@ -9,6 +9,7 @@
 	hasOwnProperty = Object.prototype.hasOwnProperty;
 
 	var regXContainsTag = /^\s*<(\w+|!)[^>]*>/;
+	var regXDataType = /^\[object\s+(.*?)\]$/;
 
 	var tool = function(selector, context) {
 		return new Tool(selector, context);
@@ -54,14 +55,14 @@
 			return this;
 		}
 
-		if (typeof selector === 'object' && selector.nodeName) {
+		if (tool.type(selector) === 'object' && selector.nodeName) {
 			this.length = 1;
 			this[0] = selector;
 
 			return this;
 		}
 
-		if (typeof selector !== 'string') {
+		if (tool.type(selector) !== 'string') {
 			nodes = selector;
 		}
 		else {
@@ -86,10 +87,18 @@
 		version: '0.0.1',
 
 		each: function(callback) {
-			return tool.each(this, callback);
+			var len = this.length;
+
+			for (var i = 0; i < len; i++) {
+				callback.call(this[i], i, this[i]);
+			}
+
+			return this;
+			// return tool.each(this, callback);
 		},
 
 		size: function() {
+			console.log(this.type());
 			return this.length;
 		},
 
@@ -127,15 +136,26 @@
 			this[0].style.display = 'none';
 		},
 
-		text: function(val) {
-			if (val === undefined) {
-				return this[0].textContent;
+		html: function(html) {
+			if (html) {
+				return this.each(function() {
+					this.innerHTML = html;
+				});
 			}
 			else {
-				this.empty().each(function() { this.textContent = val });
+				return this[0].innerHTML;
 			}
+		},
 
-			return this;
+		text: function(text) {
+			if (text) {
+				return this.each(function() {
+					this.textContent = text;
+				});
+			}
+			else {
+				return this[0].textContent.trim();
+			}
 		},
 
 		empty: function() {
@@ -186,10 +206,18 @@
 			return tool(res);
 		},
 
-		append: function(node) {
-			if (this.nodeType && this.nodeType === 1) {
-				this[0].appendChild(node);
-			}
+		append: function(thing) {
+			return this.each(function() {
+				if (typeof thing === 'string') {
+					this.insertAdjacentHTML('beforeend', thing);
+				}
+				else {
+					var that = this;
+					tool(thing).each(function(name, value) {
+						that.insertAdjacentHTML('beforeend', value.outerHTML);
+					});
+				}
+			});
 		}
 
 	};
@@ -214,6 +242,11 @@
 		}
 
 		return tool(obj);
+	};
+
+	tool.type = function(obj) {
+		var res = Object.prototype.toString.call(obj).match(regXDataType)[1].toLowerCase();
+		return res;
 	};
 
 }).call(this);
