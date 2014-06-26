@@ -131,12 +131,24 @@
 		return index === undefined ? this[0] : this[index];
 	};
 
+	tool.fn.at = function(index) {
+		return tool(this.get(index));
+	}
+
 	tool.fn.first = function() {
 		return tool(this[0]);
 	};
 
 	tool.fn.last = function() {
 		return tool(this[this.length - 1]);
+	};
+
+	tool.fn.show = function() {
+		this[0].style.display = 'block';
+	}
+
+	tool.fn.hide = function() {
+		this[0].style.display = 'none';
 	};
 
 }).call(this);
