@@ -4,7 +4,11 @@
 
 	var root = this,
 	doc = root.document,
+
+	slice = Array.prototype.slice,
 	hasOwnProperty = Object.prototype.hasOwnProperty;
+
+	var regXContainsTag = /^\s*<(\w+|!)[^>]*>/;
 
 	var tool = function(selector, context) {
 		return new Tool(selector, context);
@@ -12,57 +16,44 @@
 
 	// Constructor
 	var Tool = function(selector, context) {
-		// context can be a selector, element, this document, or iframe document
-		var d,
-		nodes;
 
-		if (context && context.nodeType) {
-			// node
-			if (context.nodeType === 1) {
-				// element
-				d = context.ownerDocument;
-			}
-			else {
-				// document or iframe
-				d = context.body.ownerDocument;
+		var nodes, currentContext = doc;
+
+        if (context){
+			if (context.nodeType){//it's either a document node or element node
+				currentContext = context;
+			} else { //else it's a string selector, use it to select a node
+				currentContext = doc.querySelector(context);
 			}
 		}
-		else {
-			// selector
-			d = doc;
-		}
 
-		if (!selector) {
-			this.length = 1;
-			this[0] = doc.documentElement;
-
+		if (!selector || selector === ''
+			|| typeof selector === 'string' && selector.trim() === '') {
+			this.length = 0;
 			return this;
 		}
 
-		//if HTML string, construct domfragment, fill object, then return object
-		if (typeof selector === 'string' &&
-			selector.charAt(0) === "<" &&
-			selector.charAt( selector.length - 1 ) === ">" &&
-			selector.length >= 3){var divElm = d.createElement('div');
-			divElm.className = 'hippo-doc-frag-wrapper';
-			var docFrag = d.createDocumentFragment();
-			docFrag.appendChild(divElm);
+		if (typeof selector === 'string' && regXContainsTag.test(selector)) {
+			var divEl = currentContext.createElement('div');
+			divEl.className = 'tool-frag';
+
+			var docFrag = currentContext.createDocumentFragment();
+			docFrag.appendChild(divEl);
+
 			var queryDiv = docFrag.querySelector('div');
-			queryDiv.innerHTML = selector;
-			var numberOfChildren = queryDiv.children.length;
+			queryDiv.textContent = selector;
 
-			//loop over nodelist and fill object, needs to be done because a string of html can be passed with siblings
-			for (var z = 0; z < numberOfChildren; z++) {
-				this[z] = queryDiv.children[z];
+			var numChildren = queryDiv.children.length;
+
+			for (var c = 0; c < numChildren; c++) {
+				this[c] = queryDiv[c];
 			}
 
-			//give the object a length value
-			this.length = numberOfChildren;
+			this.length = numChildren;
 
 			return this;
 		}
 
-		//if a single element node reference is passed, fill object, return object
 		if (typeof selector === 'object' && selector.nodeName) {
 			this.length = 1;
 			this[0] = selector;
@@ -70,19 +61,15 @@
 			return this;
 		}
 
-		if (typeof selector !== 'string') {//its not a string so its an array or nodelist
-			nodes = selector; //so... is already something that can be looped with for loop
+		if (typeof selector !== 'string') {
+			nodes = selector;
 		}
-		else {//if its a string create a nodelist, use context if provided
-			if (typeof context === 'string' && d.querySelectorAll(context)[0] === undefined) {//bad context return nothing
-				nodes = []; //no context
-			}
-			else {//its a string selector, create a context first, then run query again, or use current document
-				nodes = (typeof context === 'string' ? d.querySelectorAll(context)[0] : d).querySelectorAll(selector);
-			}
+		else {
+			nodes = currentContext.querySelectorAll(selector.trim());
 		}
 
-		for (var i = 0; i < nodes.length; i++) {
+
+		for (var i = 0, nodeLen = nodes.length; i < nodeLen; i++) {
 			this[i] = nodes[i];
 		}
 
@@ -97,8 +84,6 @@
 		constructor: tool,
 
 		version: '0.0.1',
-
-		events: {},
 
 		each: function(callback) {
 			return tool.each(this, callback);
@@ -144,16 +129,18 @@
 
 		text: function(val) {
 			if (val === undefined) {
-				return this[0].innerHTML;
+				return this[0].textContent;
 			}
 			else {
-				return this.empty().each(function() { this.innerHTML = val });
+				this.empty().each(function() { this.textContent = val });
 			}
+
+			return this;
 		},
 
 		empty: function() {
 			return this.each(function() {
-				this.innerHTML = '';
+				this.textContent = '';
 			});
 		},
 
@@ -197,7 +184,14 @@
 			});
 
 			return tool(res);
+		},
+
+		append: function(node) {
+			if (this.nodeType && this.nodeType === 1) {
+				this[0].appendChild(node);
+			}
 		}
+
 	};
 
 	tool.each = function(obj, callback) {
