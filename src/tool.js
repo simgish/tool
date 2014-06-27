@@ -28,8 +28,7 @@
 			}
 		}
 
-		if (!selector || selector === ''
-			|| typeof selector === 'string' && selector.trim() === '') {
+		if (!selector || selector === '' || typeof selector === 'string' && selector.trim() === '') {
 			this.length = 0;
 			return this;
 		}
@@ -119,13 +118,17 @@
 		},
 
 		map: function (callback) {
-        	var results = [];
+			var results = [];
 
-        	for (var i = 0; i < this.length; i++) {
-            	results.push(callback.call(this, this[i], i));
-        	}
+			this.each(function(value, key) {
 
-        	return results;
+			})
+
+			for (var i = 0; i < this.length; i++) {
+				results.push(callback.call(this, this[i], i));
+			}
+
+			return results;
         },
 
 		show: function() {
@@ -215,6 +218,20 @@
 					var that = this;
 					tool(thing).each(function(name, value) {
 						that.insertAdjacentHTML('beforeend', value.outerHTML);
+					});
+				}
+			});
+		},
+
+		prepend: function(thing) {
+			return this.each(function() {
+				if (typeof thing === 'string') {
+					this.insertAdjacentHTML('afterbegin', thing);
+				}
+				else {
+					var that = this;
+					tool(thing).each(function(name, value) {
+						that.insertAdjacentHTML('afterbegin', value.outerHTML);
 					});
 				}
 			});
