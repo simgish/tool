@@ -54,14 +54,14 @@
 			return this;
 		}
 
-		if (tool.type(selector) === 'object' && selector.nodeName) {
+		if (typeof selector === 'object' && selector.nodeName) {
 			this.length = 1;
 			this[0] = selector;
 
 			return this;
 		}
 
-		if (tool.type(selector) !== 'string') {
+		if (typeof selector !== 'string') {
 			nodes = selector;
 		}
 		else {
@@ -106,7 +106,8 @@
 		},
 
 		at: function(index) {
-			return tool(this.get(index));
+			var res = this.get(index);
+			return tool(res);
 		},
 
 		first: function() {
@@ -132,11 +133,15 @@
         },
 
 		show: function() {
-			this[0].style.display = 'block';
+			return this.each(function() {
+				this.style.display = 'block';
+			});
 		},
 
 		hide: function() {
-			this[0].style.display = 'none';
+			return this.each(function() {
+				this.style.display = 'none';
+			});
 		},
 
 		html: function(html) {
