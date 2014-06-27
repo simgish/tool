@@ -228,6 +228,12 @@
 			});
 		},
 
+		appendTo: function(selector) {
+			return this.each(function() {
+				tool(selector).append(this);
+			});
+		},
+
 		prepend: function(thing) {
 			return this.each(function() {
 				if (typeof thing === 'string') {
@@ -242,9 +248,9 @@
 			});
 		},
 
-		appendTo: function(selector) {
+		prependTo: function(selector) {
 			return this.each(function() {
-				tool(selector).append(this);
+				tool(selector).prepend(this);
 			});
 		}
 
