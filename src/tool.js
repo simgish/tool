@@ -240,6 +240,12 @@
 					});
 				}
 			});
+		},
+
+		appendTo: function(selector) {
+			return this.each(function() {
+				tool(selector).append(this);
+			});
 		}
 
 	};
