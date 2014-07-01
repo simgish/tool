@@ -121,9 +121,9 @@
 		map: function (callback) {
 			var results = [];
 
-			this.each(function(value, key) {
+			// this.each(function(value, key) {
 
-			})
+			// })
 
 			for (var i = 0; i < this.length; i++) {
 				results.push(callback.call(this, this[i], i));
@@ -276,6 +276,12 @@
 		}
 
 		return tool(obj);
+	};
+
+	tool.map = function(obj, callback) {
+		tool.each(obj, function() {
+			callback.call(null, this);
+		});
 	};
 
 	tool.type = function(obj) {
