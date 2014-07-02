@@ -151,7 +151,9 @@
 				});
 			}
 			else {
-				return this[0].innerHTML;
+				return this.each(function() {
+					this[0].innerHTML;
+				});
 			}
 		},
 
@@ -280,7 +282,7 @@
 
 	tool.map = function(obj, callback) {
 		tool.each(obj, function() {
-			callback.call(null, this);
+			callback.call(this);
 		});
 	};
 
