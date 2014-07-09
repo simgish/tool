@@ -15,15 +15,16 @@
 		return new Tool(selector, context);
 	};
 
-	// Constructor
 	var Tool = function(selector, context) {
 
 		var nodes, currentContext = doc;
 
         if (context){
-			if (context.nodeType){//it's either a document node or element node
+			if (context.nodeType) {
+				//it's either a document node or element node
 				currentContext = context;
-			} else { //else it's a string selector, use it to select a node
+			} else {
+				//else it's a string selector, use it to select a node
 				currentContext = doc.querySelector(context);
 			}
 		}
@@ -74,7 +75,7 @@
 		}
 
 		this.length = nodes.length;
-		
+
 		return this;
 	};
 
