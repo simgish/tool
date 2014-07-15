@@ -19,9 +19,9 @@
 	var Tool = function(selector, context) {
 
 		var nodes, currentContext = doc;
-
-        if (context){
-			if (context.nodeType){//it's either a document node or element node
+		
+		if (context) {
+			if (context.nodeType) {//it's either a document node or element node
 				currentContext = context;
 			} else { //else it's a string selector, use it to select a node
 				currentContext = doc.querySelector(context);
@@ -74,7 +74,7 @@
 		}
 
 		this.length = nodes.length;
-		
+
 		return this;
 	};
 
@@ -97,7 +97,6 @@
 		},
 
 		size: function() {
-			console.log(this.type());
 			return this.length;
 		},
 
@@ -130,7 +129,7 @@
 			}
 
 			return results;
-        },
+		},
 
 		show: function() {
 			return this.each(function() {
@@ -176,7 +175,7 @@
 
 		children: function() {
 			var res = [],
-				kids = this[0].childNodes;
+			kids = this[0].childNodes;
 
 
 			for (var i in kids) {
@@ -260,7 +259,7 @@
 
 	tool.each = function(obj, callback) {
 		var name,
-			length = obj.length;
+		length = obj.length;
 
 		if (length === undefined) {
 			for (name in obj) {
