@@ -11,6 +11,17 @@
 	var regXContainsTag = /^\s*<(\w+|!)[^>]*>/;
 	var regXDataType = /^\[object\s+(.*?)\]$/;
 
+	var dataType = function dataType(obj, type) {
+        var query = (regXFuncName).exec((obj).constructor.toString().toLowerCase());
+        var result = (query && query.length > 1) ? query[1] : '';
+
+        if (typeof type === 'string') {
+            return result === type.toLowerCase();
+        }
+
+        return result;
+    };
+
 	var tool = function(selector, context) {
 		return new Tool(selector, context);
 	};
